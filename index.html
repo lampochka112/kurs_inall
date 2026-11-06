@@ -1,1 +1,2800 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebCourse Pro — HTML · CSS · JS</title>
+<style>
+/* ============ RESET & TOKENS ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b1120;
+  --bg-soft:#111a2e;
+  --bg-card:#151f36;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --border:#243049;
+  --html:#f97316;
+  --css:#3b82f6;
+  --js:#eab308;
+  --accent:#38bdf8;
+  --accent2:#a855f7;
+  --green:#22c55e;
+  --radius:14px;
+  --shadow:0 20px 40px rgba(0,0,0,.35);
+  --mono:'Fira Code','Consolas',monospace;
+}
+body.light{
+  --bg:#f6f8fc;
+  --bg-soft:#ffffff;
+  --bg-card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --border:#e2e8f0;
+  --shadow:0 20px 40px rgba(15,23,42,.08);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  transition:background .3s,color .3s;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{
+  font-family:var(--mono);
+  background:var(--bg-soft);
+  padding:2px 6px;
+  border-radius:5px;
+  font-size:.88em;
+  color:var(--accent);
+}
+pre{
+  background:#080d1a;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+  overflow-x:auto;
+  margin:14px 0 20px;
+  font-size:.86rem;
+  line-height:1.65;
+}
+pre code{background:none;padding:0;color:#e2e8f0;font-size:inherit}
 
+/* ============ LAYOUT ============ */
+.app{display:flex;min-height:100vh}
+
+/* ============ SIDEBAR ============ */
+.sidebar{
+  width:300px;
+  flex-shrink:0;
+  background:var(--bg-soft);
+  border-right:1px solid var(--border);
+  height:100vh;
+  position:sticky;
+  top:0;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s ease;
+  z-index:200;
+}
+.brand{
+  padding:22px 22px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.brand__logo{
+  width:42px;height:42px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-weight:700;font-family:var(--mono);font-size:.95rem;
+}
+.brand__title{font-size:1.1rem;font-weight:700}
+.brand__sub{font-size:.72rem;color:var(--muted)}
+
+.sidebar__scroll{
+  overflow-y:auto;
+  flex:1;
+  padding:16px 14px 24px;
+}
+.sidebar__scroll::-webkit-scrollbar{width:6px}
+.sidebar__scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.cat{margin-bottom:20px}
+.cat__head{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  font-size:.72rem;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--muted);
+}
+.cat__dot{width:9px;height:9px;border-radius:50%}
+.cat--html .cat__dot{background:var(--html)}
+.cat--css .cat__dot{background:var(--css)}
+.cat--js .cat__dot{background:var(--js)}
+.cat--proj .cat__dot{background:var(--green)}
+.cat--ref .cat__dot{background:var(--accent2)}
+
+.nav-item{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;
+  border-radius:9px;
+  font-size:.88rem;
+  color:var(--muted);
+  cursor:pointer;
+  transition:.2s;
+  border:none;background:none;width:100%;text-align:left;
+  font-family:inherit;
+  line-height:1.3;
+}
+.nav-item:hover{background:var(--bg-card);color:var(--text)}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(168,85,247,.15));
+  color:var(--text);
+  font-weight:600;
+  box-shadow:inset 3px 0 0 var(--accent);
+}
+.nav-item .num{opacity:.5;font-family:var(--mono);font-size:.75rem;flex-shrink:0;width:20px}
+.nav-item .lbl{flex:1;min-width:0}
+.nav-item .done-ic{color:var(--green);font-size:.8rem}
+
+/* Progress */
+.progress-box{
+  padding:16px 22px 20px;
+  border-top:1px solid var(--border);
+  font-size:.8rem;
+  color:var(--muted);
+}
+.progress-bar{
+  height:8px;background:var(--bg-card);border-radius:999px;
+  overflow:hidden;margin:8px 0;
+}
+.progress-bar__fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--html),var(--css),var(--js));
+  transition:width .4s;
+}
+.progress-text{display:flex;justify-content:space-between}
+
+/* ============ MAIN ============ */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+.topbar{
+  position:sticky;top:0;z-index:90;
+  display:flex;align-items:center;gap:14px;
+  padding:14px 28px;
+  background:rgba(11,17,32,.8);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+body.light .topbar{background:rgba(246,248,252,.85)}
+
+.burger-btn{
+  display:none;
+  width:40px;height:40px;border-radius:10px;
+  background:var(--bg-card);border:1px solid var(--border);
+  cursor:pointer;color:var(--text);font-size:1.2rem;
+}
+.breadcrumb{font-size:.85rem;color:var(--muted);flex:1;min-width:0}
+.breadcrumb b{color:var(--text)}
+
+.topbar__actions{display:flex;gap:8px;align-items:center}
+
+.search-btn,.theme-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--bg-card);border:1px solid var(--border);
+  cursor:pointer;font-size:1.05rem;color:var(--text);
+  transition:.2s;
+  display:grid;place-items:center;
+}
+.search-btn:hover,.theme-btn:hover{transform:rotate(20deg);border-color:var(--accent)}
+
+.content{
+  max-width:920px;
+  width:100%;
+  margin:0 auto;
+  padding:42px 28px 80px;
+}
+
+/* ============ HERO ============ */
+.welcome{text-align:center;padding:30px 0 20px}
+.welcome__badge{
+  display:inline-block;
+  padding:6px 16px;
+  border-radius:999px;
+  background:rgba(56,189,248,.1);
+  border:1px solid rgba(56,189,248,.35);
+  color:var(--accent);
+  font-size:.8rem;
+  margin-bottom:20px;
+}
+.welcome h1{
+  font-size:clamp(1.8rem,4vw,2.8rem);
+  line-height:1.2;
+  margin-bottom:16px;
+}
+.gradient-text{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.welcome p{color:var(--muted);max-width:600px;margin:0 auto 32px;font-size:1.05rem}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:14px;
+  margin:32px 0;
+}
+.stat{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+  text-align:center;
+}
+.stat strong{display:block;font-size:1.8rem;color:var(--accent)}
+.stat span{font-size:.82rem;color:var(--muted)}
+
+.cat-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;
+  margin-top:36px;
+}
+.cat-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+  cursor:pointer;
+  text-align:left;
+  transition:.25s;
+  font-family:inherit;
+  color:var(--text);
+}
+.cat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.cat-card__icon{font-size:2rem;margin-bottom:12px}
+.cat-card__title{font-size:1.1rem;margin-bottom:6px;font-weight:700}
+.cat-card__desc{font-size:.85rem;color:var(--muted)}
+.cat-card--html:hover{border-color:var(--html)}
+.cat-card--css:hover{border-color:var(--css)}
+.cat-card--js:hover{border-color:var(--js)}
+.cat-card--ref:hover{border-color:var(--accent2)}
+
+/* ============ LESSON ============ */
+.lesson{display:none}
+.lesson.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.lesson__tag{
+  display:inline-block;
+  padding:4px 14px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.tag--html{background:rgba(249,115,22,.15);color:var(--html)}
+.tag--css{background:rgba(59,130,246,.15);color:var(--css)}
+.tag--js{background:rgba(234,179,8,.15);color:var(--js)}
+.tag--proj{background:rgba(34,197,94,.15);color:var(--green)}
+.tag--ref{background:rgba(168,85,247,.15);color:var(--accent2)}
+
+.lesson h1{font-size:clamp(1.6rem,3.5vw,2.3rem);line-height:1.2;margin-bottom:14px}
+.lesson__lead{color:var(--muted);font-size:1.05rem;margin-bottom:22px}
+.lesson__meta{
+  display:flex;gap:18px;flex-wrap:wrap;
+  font-size:.83rem;color:var(--muted);
+  padding-bottom:22px;margin-bottom:28px;
+  border-bottom:1px solid var(--border);
+}
+
+/* Level tabs */
+.level-tabs{
+  display:flex;gap:8px;
+  background:var(--bg-card);
+  padding:6px;
+  border-radius:12px;
+  margin:0 0 28px;
+  border:1px solid var(--border);
+  width:fit-content;
+  max-width:100%;
+  flex-wrap:wrap;
+}
+.level-tab{
+  padding:10px 20px;
+  border-radius:9px;
+  background:transparent;
+  border:none;
+  color:var(--muted);
+  cursor:pointer;
+  font-weight:600;
+  font-size:.9rem;
+  font-family:inherit;
+  transition:.2s;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.level-tab:hover{color:var(--text)}
+.level-tab.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+}
+.level-tab .badge{
+  padding:1px 7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.2);
+  font-size:.7rem;
+  font-weight:700;
+}
+.level-tab.active .badge{background:rgba(255,255,255,.3)}
+
+.level-content{display:none}
+.level-content.active{display:block;animation:fade .3s ease}
+
+.lesson h2{
+  font-size:1.35rem;
+  margin:36px 0 14px;
+  padding-top:10px;
+  color:var(--text);
+  scroll-margin-top:80px;
+}
+.lesson h2::before{
+  content:'#';
+  color:var(--accent);
+  margin-right:10px;
+  font-family:var(--mono);
+  opacity:.6;
+}
+.lesson h3{font-size:1.08rem;margin:22px 0 8px;color:var(--accent)}
+.lesson h4{font-size:.98rem;margin:18px 0 6px;color:var(--text);opacity:.9}
+.lesson p{margin-bottom:14px;color:var(--text)}
+.lesson ul,.lesson ol{margin:10px 0 18px 22px;color:var(--text)}
+.lesson li{margin-bottom:6px}
+.lesson strong{color:var(--text)}
+.lesson hr{border:none;border-top:1px solid var(--border);margin:28px 0}
+
+.note{
+  background:rgba(56,189,248,.08);
+  border-left:3px solid var(--accent);
+  padding:14px 18px;
+  border-radius:8px;
+  margin:16px 0;
+  font-size:.92rem;
+  color:var(--text);
+}
+.note--warn{
+  background:rgba(234,179,8,.08);
+  border-left-color:var(--js);
+}
+.note--tip{
+  background:rgba(34,197,94,.08);
+  border-left-color:var(--green);
+}
+.note--pro{
+  background:rgba(168,85,247,.08);
+  border-left-color:var(--accent2);
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin:16px 0 22px;
+  background:var(--bg-card);
+  border-radius:10px;
+  overflow:hidden;
+  font-size:.9rem;
+}
+.table th,.table td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+}
+.table th{background:var(--bg-soft);font-weight:600;color:var(--accent)}
+.table tr:last-child td{border-bottom:none}
+
+/* Anchor list */
+.anchors{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin:0 0 28px;
+  padding:14px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.anchors a{
+  padding:5px 12px;
+  border-radius:999px;
+  background:var(--bg-soft);
+  font-size:.82rem;
+  color:var(--muted);
+  transition:.2s;
+}
+.anchors a:hover{
+  color:var(--accent);
+  background:var(--bg);
+  text-decoration:none;
+}
+
+.lesson__nav{
+  display:flex;justify-content:space-between;gap:12px;
+  margin-top:50px;padding-top:28px;
+  border-top:1px solid var(--border);
+  flex-wrap:wrap;
+  align-items:center;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:11px 20px;border-radius:10px;
+  font-weight:600;font-size:.92rem;
+  cursor:pointer;border:none;font-family:inherit;
+  transition:.25s;text-decoration:none;
+}
+.btn--primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(56,189,248,.35);text-decoration:none}
+.btn--ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn--ghost:hover{border-color:var(--accent);text-decoration:none}
+.btn--done{background:var(--green);color:#06210f}
+.btn:disabled{opacity:.55;cursor:default;transform:none!important;box-shadow:none!important}
+
+/* Projects */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+  margin:20px 0;
+}
+.project{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:22px;
+  transition:.25s;
+}
+.project:hover{border-color:var(--green);transform:translateY(-4px)}
+.project__icon{font-size:2rem;margin-bottom:10px}
+.project h3{margin-bottom:8px;color:var(--text)}
+.project p{font-size:.88rem;color:var(--muted);margin-bottom:14px}
+.project__tags{display:flex;gap:6px;flex-wrap:wrap;list-style:none;margin:0 0 14px}
+.project__tags li{
+  padding:2px 10px;border-radius:999px;
+  background:var(--bg-soft);font-size:.72rem;color:var(--muted);
+}
+
+/* ============ SEARCH MODAL ============ */
+.search-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:500;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(4px);
+  padding:80px 20px 40px;
+  overflow-y:auto;
+}
+.search-modal.show{display:block}
+.search-box{
+  max-width:600px;
+  margin:0 auto;
+  background:var(--bg-soft);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+.search-box input{
+  width:100%;
+  padding:14px 18px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-size:1rem;
+  font-family:inherit;
+  outline:none;
+}
+.search-box input:focus{border-color:var(--accent)}
+.search-results{
+  margin-top:14px;
+  max-height:50vh;
+  overflow-y:auto;
+}
+.search-result{
+  padding:12px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.15s;
+}
+.search-result:hover{background:var(--bg-card)}
+.search-result__title{font-weight:600;margin-bottom:2px;color:var(--text)}
+.search-result__cat{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.search-empty{color:var(--muted);text-align:center;padding:20px}
+
+/* Overlay */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.5);z-index:150;
+}
+.overlay.show{display:block}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:900px){
+  .sidebar{
+    position:fixed;left:0;top:0;
+    transform:translateX(-100%);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .burger-btn{display:grid;place-items:center}
+  .content{padding:28px 18px 60px}
+  .topbar{padding:12px 18px}
+  .level-tabs{width:100%}
+  .level-tab{flex:1;justify-content:center}
+}
+@media(max-width:520px){
+  .lesson__meta{font-size:.78rem;gap:10px}
+  pre{font-size:.76rem;padding:14px}
+  .lesson__nav .btn{flex:1;justify-content:center;font-size:.85rem}
+  .anchors{padding:10px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand__logo">{ }</div>
+      <div>
+        <div class="brand__title">WebCourse Pro</div>
+        <div class="brand__sub">HTML · CSS · JS · Проекты</div>
+      </div>
+    </div>
+
+    <div class="sidebar__scroll" id="sidebarNav"></div>
+
+    <div class="progress-box">
+      <div class="progress-text">
+        <span>Прогресс</span>
+        <span id="progressLabel">0 / 0</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-bar__fill" id="progressFill"></div>
+      </div>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <button class="burger-btn" id="burgerBtn" aria-label="Меню">☰</button>
+      <div class="breadcrumb" id="breadcrumb"><b>Главная</b></div>
+      <div class="topbar__actions">
+        <button class="search-btn" id="searchBtn" aria-label="Поиск">🔍</button>
+        <button class="theme-btn" id="themeBtn" aria-label="Тема">🌙</button>
+      </div>
+    </div>
+
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Поиск по курсу..." autocomplete="off">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   ДАННЫЕ КУРСА
+   Каждый модуль содержит:
+   - levels: { basic: HTML, advanced: HTML }
+   - anchors: якорные ссылки для навигации
+   ========================================================== */
+const COURSE = {
+  welcome: {
+    id: 'welcome',
+    title: 'Главная',
+    html: `
+      <div class="welcome">
+        <span class="welcome__badge">Бесплатно · Для новичков и среднего уровня</span>
+        <h1>HTML + CSS + <span class="gradient-text">JavaScript</span><br>от новичка до уверенного джуна</h1>
+        <p>Полный практический курс: два уровня на каждый модуль, ~100 часов, 3 проекта в портфолио. Учись в своём темпе.</p>
+
+        <div class="stats">
+          <div class="stat"><strong>12</strong><span>модулей</span></div>
+          <div class="stat"><strong>100+</strong><span>часов</span></div>
+          <div class="stat"><strong>2</strong><span>уровня</span></div>
+          <div class="stat"><strong>3</strong><span>проекта</span></div>
+        </div>
+
+        <div class="cat-cards">
+          <button class="cat-card cat-card--html" data-go="html-basics">
+            <div class="cat-card__icon">🟠</div>
+            <div class="cat-card__title">HTML</div>
+            <div class="cat-card__desc">3 модуля · структура, формы, семантика, a11y</div>
+          </button>
+          <button class="cat-card cat-card--css" data-go="css-basics">
+            <div class="cat-card__icon">🔵</div>
+            <div class="cat-card__title">CSS</div>
+            <div class="cat-card__desc">4 модуля · стили, layout, адаптив, advanced</div>
+          </button>
+          <button class="cat-card cat-card--js" data-go="js-basics">
+            <div class="cat-card__icon">🟡</div>
+            <div class="cat-card__title">JavaScript</div>
+            <div class="cat-card__desc">5 модулей · от переменных до async и ES6+</div>
+          </button>
+          <button class="cat-card cat-card--ref" data-go="cheatsheet">
+            <div class="cat-card__icon">📖</div>
+            <div class="cat-card__title">Шпаргалки</div>
+            <div class="cat-card__desc">Краткий справочник по всем темам</div>
+          </button>
+        </div>
+
+        <div class="anchors" style="margin-top:32px">
+          <a href="#html-basics" data-go="html-basics">🟠 HTML с нуля</a>
+          <a href="#css-basics" data-go="css-basics">🔵 CSS с нуля</a>
+          <a href="#js-basics" data-go="js-basics">🟡 JS с нуля</a>
+          <a href="#cheatsheet" data-go="cheatsheet">📖 Шпаргалки</a>
+        </div>
+      </div>
+    `
+  },
+
+  /* ==================== HTML ==================== */
+  'html-basics': {
+    cat: 'html',
+    num: '01',
+    title: 'Основы HTML',
+    lead: 'Структура документа, теги, ссылки, картинки, списки и таблицы — фундамент любого сайта.',
+    meta: ['⏱ 4–5 часов', '✍️ 6 заданий', '🟠 HTML'],
+    anchors: [
+      { id: 'what', label: 'Что такое HTML' },
+      { id: 'structure', label: 'Структура' },
+      { id: 'text', label: 'Текст' },
+      { id: 'links', label: 'Ссылки' },
+      { id: 'images', label: 'Картинки' },
+      { id: 'lists', label: 'Списки' },
+      { id: 'tables', label: 'Таблицы' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="what">Что такое HTML</h2>
+        <p><strong>HTML</strong> (HyperText Markup Language) — язык разметки, описывающий структуру страницы. Это не язык программирования: в нём нет логики, только разметка элементов.</p>
+        <p>Браузер читает HTML, строит <strong>DOM</strong> (дерево элементов) и отрисовывает страницу.</p>
+
+        <h2 id="structure">Базовая структура документа</h2>
+        <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;meta name="description" content="Описание для поисковиков"&gt;
+  &lt;title&gt;Моя страница&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Привет, мир!&lt;/h1&gt;
+  &lt;p&gt;Это мой первый сайт.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+        <table class="table">
+          <thead><tr><th>Тег</th><th>Что делает</th></tr></thead>
+          <tbody>
+            <tr><td><code>&lt;!DOCTYPE html&gt;</code></td><td>Говорит браузеру: это HTML5</td></tr>
+            <tr><td><code>&lt;html lang="ru"&gt;</code></td><td>Корневой элемент, язык — русский</td></tr>
+            <tr><td><code>&lt;head&gt;</code></td><td>Служебная информация (не видна)</td></tr>
+            <tr><td><code>&lt;meta charset&gt;</code></td><td>Кодировка, обязательно UTF-8</td></tr>
+            <tr><td><code>&lt;meta name="viewport"&gt;</code></td><td>Адаптивность на мобильных</td></tr>
+            <tr><td><code>&lt;title&gt;</code></td><td>Заголовок вкладки</td></tr>
+            <tr><td><code>&lt;body&gt;</code></td><td>Видимое содержимое</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="text">Текстовые теги</h2>
+        <pre><code>&lt;h1&gt;Заголовок 1&lt;/h1&gt;
+&lt;h2&gt;Заголовок 2&lt;/h2&gt;
+&lt;h3&gt;Заголовок 3&lt;/h3&gt;
+
+&lt;p&gt;Параграф с &lt;strong&gt;важным&lt;/strong&gt; и &lt;em&gt;курсивным&lt;/em&gt;.&lt;/p&gt;
+&lt;span&gt;Строчный элемент&lt;/span&gt;
+&lt;br&gt;  перенос строки
+&lt;hr&gt;  горизонтальная линия
+&lt;small&gt;Мелкий текст&lt;/small&gt;
+&lt;mark&gt;Подсвеченный текст&lt;/mark&gt;
+&lt;blockquote&gt;Цитата&lt;/blockquote&gt;
+&lt;code&gt;code-фрагмент&lt;/code&gt;</code></pre>
+
+        <div class="note note--warn">⚠️ <b>&lt;h1&gt;</b> — один на страницу. Иерархия: h1 → h2 → h3, не перескакивай.</div>
+
+        <h2 id="links">Ссылки</h2>
+        <pre><code>&lt;!-- Внешняя --&gt;
+&lt;a href="https://google.com"&gt;Google&lt;/a&gt;
+
+&lt;!-- Новая вкладка + безопасность --&gt;
+&lt;a href="https://google.com" target="_blank" rel="noopener noreferrer"&gt;Google&lt;/a&gt;
+
+&lt;!-- Внутренняя --&gt;
+&lt;a href="about.html"&gt;О нас&lt;/a&gt;
+
+&lt;!-- Якорь на странице --&gt;
+&lt;a href="#section"&gt;К разделу&lt;/a&gt;
+&lt;h2 id="section"&gt;Раздел&lt;/h2&gt;
+
+&lt;!-- Email / телефон --&gt;
+&lt;a href="mailto:me@example.com"&gt;Написать&lt;/a&gt;
+&lt;a href="tel:+79991234567"&gt;Позвонить&lt;/a&gt;
+&lt;a href="file.pdf" download&gt;Скачать&lt;/a&gt;</code></pre>
+
+        <h2 id="images">Изображения</h2>
+        <pre><code>&lt;img src="cat.jpg" alt="Рыжий кот на окне" width="300" height="200"&gt;</code></pre>
+        <ul>
+          <li><code>src</code> — путь к файлу</li>
+          <li><code>alt</code> — <strong>обязателен</strong> (доступность + SEO)</li>
+          <li><code>width</code> / <code>height</code> — резервируют место, чтобы не «прыгала» вёрстка</li>
+          <li><code>loading="lazy"</code> — ленивая загрузка</li>
+        </ul>
+
+        <h2 id="lists">Списки</h2>
+        <pre><code>&lt;ul&gt;
+  &lt;li&gt;Яблоко&lt;/li&gt;
+  &lt;li&gt;Банан&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Проснуться&lt;/li&gt;
+  &lt;li&gt;Написать код&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;!-- Вложенный --&gt;
+&lt;ul&gt;
+  &lt;li&gt;Фрукты
+    &lt;ul&gt;
+      &lt;li&gt;Яблоко&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+
+        <h2 id="tables">Таблицы</h2>
+        <pre><code>&lt;table&gt;
+  &lt;caption&gt;Расписание&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th&gt;День&lt;/th&gt;&lt;th&gt;Предмет&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;Пн&lt;/td&gt;&lt;td&gt;Математика&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;Вт&lt;/td&gt;&lt;td&gt;Физика&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+        <div class="note">💡 Таблицы — <b>только для табличных данных</b>, не для вёрстки!</div>
+      `,
+      advanced: `
+        <h2>Семантика тегов на практике</h2>
+        <p>Правильная семантика — это SEO и доступность. Браузер, скринридеры и поисковики понимают структуру.</p>
+        <pre><code>&lt;article&gt;  — самостоятельная публикация (пост, новость)
+&lt;section&gt;  — раздел с заголовком
+&lt;aside&gt;    — боковая вставка
+&lt;figure&gt;   — иллюстрация с подписью
+&lt;figcaption&gt; — подпись к figure
+&lt;time datetime="2025-01-01"&gt;1 января&lt;/time&gt;
+&lt;mark&gt;     — подсветка важного</code></pre>
+
+        <h2>Доступность (a11y)</h2>
+        <ul>
+          <li><code>alt</code> для картинок — обязательно</li>
+          <li><code>aria-label</code> для иконочных кнопок</li>
+          <li><code>role</code> — когда нативного тега нет</li>
+          <li>Осмысленный порядок заголовков</li>
+          <li>Достаточный контраст текста</li>
+        </ul>
+        <pre><code>&lt;button aria-label="Закрыть"&gt;✕&lt;/button&gt;
+
+&lt;img src="chart.png" alt="График роста продаж: 2024 → 2025"&gt;
+
+&lt;nav aria-label="Основная навигация"&gt;...&lt;/nav&gt;</code></pre>
+
+        <h2>Микроразметка (Schema.org)</h2>
+        <p>Помогает поисковикам понять содержимое:</p>
+        <pre><code>&lt;article itemscope itemtype="https://schema.org/Article"&gt;
+  &lt;h1 itemprop="headline"&gt;Заголовок&lt;/h1&gt;
+  &lt;time itemprop="datePublished" datetime="2025-01-01"&gt;1 января&lt;/time&gt;
+&lt;/article&gt;</code></pre>
+
+        <h2>Валидация HTML</h2>
+        <ul>
+          <li><a href="https://validator.w3.org/" target="_blank">validator.w3.org</a> — официальный</li>
+          <li>Проверяй перед деплоем</li>
+          <li>Ошибки в консоли DevTools тоже сигналят</li>
+        </ul>
+
+        <div class="note note--pro">💡 <b>Pro-tip:</b> Открой любой крупный сайт (MDN, GitHub), зайди в DevTools → Elements — посмотри, как организована семантика у них.</div>
+      `
+    }
+  },
+
+  'html-forms': {
+    cat: 'html',
+    num: '02',
+    title: 'Формы и интерактив',
+    lead: 'Формы для ввода данных: input, select, textarea, валидация и семантика.',
+    meta: ['⏱ 4–5 часов', '✍️ 5 заданий', '🟠 HTML'],
+    anchors: [
+      { id: 'form', label: 'Форма' },
+      { id: 'inputs', label: 'Inputs' },
+      { id: 'validate', label: 'Валидация' },
+      { id: 'a11y', label: 'Доступность' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="form">Форма</h2>
+        <pre><code>&lt;form action="/submit" method="post"&gt;
+  &lt;label for="name"&gt;Имя:&lt;/label&gt;
+  &lt;input id="name" type="text" name="name" required&gt;
+
+  &lt;button type="submit"&gt;Отправить&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+        <div class="note">💡 <code>&lt;label for="id"&gt;</code> — связь с input. Клик по подписи фокусирует поле.</div>
+
+        <h2 id="inputs">Типы input</h2>
+        <table class="table">
+          <thead><tr><th>type</th><th>Для чего</th></tr></thead>
+          <tbody>
+            <tr><td><code>text</code></td><td>обычный текст</td></tr>
+            <tr><td><code>email</code></td><td>email с валидацией</td></tr>
+            <tr><td><code>password</code></td><td>скрытый ввод</td></tr>
+            <tr><td><code>number</code></td><td>число</td></tr>
+            <tr><td><code>date</code> / <code>time</code></td><td>дата и время</td></tr>
+            <tr><td><code>checkbox</code></td><td>флажок</td></tr>
+            <tr><td><code>radio</code></td><td>один из нескольких</td></tr>
+            <tr><td><code>file</code></td><td>загрузка файла</td></tr>
+            <tr><td><code>range</code></td><td>слайдер</td></tr>
+            <tr><td><code>color</code></td><td>выбор цвета</td></tr>
+            <tr><td><code>search</code></td><td>поле поиска</td></tr>
+          </tbody>
+        </table>
+
+        <h3>select, textarea</h3>
+        <pre><code>&lt;select name="city"&gt;
+  &lt;option value=""&gt;-- выбери --&lt;/option&gt;
+  &lt;option value="msk"&gt;Москва&lt;/option&gt;
+  &lt;option value="spb"&gt;СПб&lt;/option&gt;
+&lt;/select&gt;
+
+&lt;textarea name="msg" rows="4"&gt;&lt;/textarea&gt;</code></pre>
+
+        <h2 id="validate">Базовая валидация</h2>
+        <pre><code>&lt;input type="email" required&gt;
+&lt;input type="password" minlength="8"&gt;
+&lt;input type="number" min="1" max="100"&gt;
+&lt;input type="text" pattern="[A-Za-z]{3,}"&gt;</code></pre>
+
+        <div class="note note--tip">✅ Браузер сам валидирует при <code>required</code>, <code>type</code>, <code>min</code>, <code>max</code>, <code>pattern</code>. JS нужен только для кастомных сообщений.</div>
+      `,
+      advanced: `
+        <h2 id="a11y">Доступные формы</h2>
+        <ul>
+          <li>Всегда <code>&lt;label&gt;</code> или <code>aria-label</code></li>
+          <li><code>fieldset</code> + <code>legend</code> для групп</li>
+          <li><code>aria-describedby</code> — подсказки к полю</li>
+          <li><code>aria-invalid</code> — при ошибке</li>
+        </ul>
+        <pre><code>&lt;fieldset&gt;
+  &lt;legend&gt;Пол&lt;/legend&gt;
+  &lt;label&gt;&lt;input type="radio" name="gender" value="m"&gt; Муж&lt;/label&gt;
+  &lt;label&gt;&lt;input type="radio" name="gender" value="f"&gt; Жен&lt;/label&gt;
+&lt;/fieldset&gt;
+
+&lt;input
+  id="email"
+  type="email"
+  aria-describedby="email-hint"
+  aria-invalid="false"
+&gt;
+&lt;p id="email-hint"&gt;Мы не передаём email третьим лицам&lt;/p&gt;</code></pre>
+
+        <h2>Кастомная валидация через JS</h2>
+        <pre><code>const form = document.querySelector('form');
+const email = document.getElementById('email');
+
+form.addEventListener('submit', (e) =&gt; {
+  if (!email.value.includes('@')) {
+    e.preventDefault();
+    email.setAttribute('aria-invalid', 'true');
+    email.focus();
+  }
+});</code></pre>
+
+        <h2>Constraint Validation API</h2>
+        <pre><code>email.validity.valid;
+email.validity.typeMismatch;
+email.setCustomValidity('Неверный формат');
+email.setCustomValidity(''); // сбросить</code></pre>
+
+        <h2>FormData</h2>
+        <pre><code>const formData = new FormData(form);
+const data = Object.fromEntries(formData);
+console.log(data);
+
+// Отправка без перезагрузки
+await fetch('/api', {
+  method: 'POST',
+  body: formData,
+});</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Формы должны работать и без JS. Всегда делай серверную валидацию — клиентская защита не считается.</div>
+      `
+    }
+  },
+
+  'html-media-semantic': {
+    cat: 'html',
+    num: '03',
+    title: 'Семантика и медиа',
+    lead: 'Правильная структура документа, аудио, видео, встраиваемый контент.',
+    meta: ['⏱ 3 часа', '✍️ 3 задания', '🟠 HTML'],
+    anchors: [
+      { id: 'semantic', label: 'Семантика' },
+      { id: 'media', label: 'Медиа' },
+      { id: 'iframe', label: 'iframe' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="semantic">Семантические теги</h2>
+        <pre><code>&lt;header&gt;  — шапка
+&lt;nav&gt;     — навигация
+&lt;main&gt;    — основное содержимое (один на страницу)
+&lt;section&gt; — раздел с заголовком
+&lt;article&gt; — самостоятельная статья
+&lt;aside&gt;   — боковая панель
+&lt;footer&gt;  — подвал</code></pre>
+
+        <pre><code>&lt;body&gt;
+  &lt;header&gt;
+    &lt;nav&gt;...&lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;article&gt;
+      &lt;h1&gt;Заголовок статьи&lt;/h1&gt;
+      &lt;section&gt;
+        &lt;h2&gt;Подраздел&lt;/h2&gt;
+        &lt;p&gt;Текст&lt;/p&gt;
+      &lt;/section&gt;
+    &lt;/article&gt;
+
+    &lt;aside&gt;
+      &lt;p&gt;Связанное&lt;/p&gt;
+    &lt;/aside&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    © 2025
+  &lt;/footer&gt;
+&lt;/body&gt;</code></pre>
+
+        <div class="note">💡 Не используй <code>&lt;div&gt;</code>, если есть подходящий семантический тег.</div>
+
+        <h2 id="media">Аудио и видео</h2>
+        <pre><code>&lt;video src="video.mp4" controls width="500" poster="cover.jpg"&gt;
+  Ваш браузер не поддерживает видео.
+&lt;/video&gt;
+
+&lt;audio src="sound.mp3" controls&gt;&lt;/audio&gt;</code></pre>
+
+        <ul>
+          <li><code>controls</code> — показать кнопки</li>
+          <li><code>poster</code> — превью-картинка</li>
+          <li><code>autoplay muted loop</code> — авто-воспроизведение (обязательно muted)</li>
+          <li><code>preload="none"</code> — не грузить заранее</li>
+        </ul>
+
+        <h2 id="iframe">iframe</h2>
+        <pre><code>&lt;iframe
+  src="https://example.com/embed"
+  width="560"
+  height="315"
+  title="Видео"
+  loading="lazy"
+&gt;&lt;/iframe&gt;</code></pre>
+        <div class="note note--warn">⚠️ Всегда указывай <code>title</code> для доступности и <code>loading="lazy"</code> для производительности.</div>
+      `,
+      advanced: `
+        <h2>Микроразметка</h2>
+        <p>Schema.org помогает Google/Яндексу понимать структуру и показывать расширенные сниппеты.</p>
+        <pre><code>&lt;article itemscope itemtype="https://schema.org/Article"&gt;
+  &lt;h1 itemprop="headline"&gt;Заголовок&lt;/h1&gt;
+  &lt;p itemprop="author"&gt;Иван&lt;/p&gt;
+  &lt;time itemprop="datePublished" datetime="2025-01-01"&gt;
+    1 января 2025
+  &lt;/time&gt;
+&lt;/article&gt;</code></pre>
+
+        <h2>Responsive изображения</h2>
+        <pre><code>&lt;picture&gt;
+  &lt;source media="(min-width: 1200px)" srcset="large.webp" type="image/webp"&gt;
+  &lt;source media="(min-width: 600px)" srcset="medium.webp" type="image/webp"&gt;
+  &lt;img src="small.jpg" alt="Фото" loading="lazy"&gt;
+&lt;/picture&gt;
+
+&lt;!-- Или srcset+sizes --&gt;
+&lt;img
+  src="small.jpg"
+  srcset="small.jpg 480w, medium.jpg 1024w, large.jpg 1920w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  alt="Фото"&gt;</code></pre>
+
+        <h2>SEO-метатеги</h2>
+        <pre><code>&lt;meta name="description" content="Краткое описание страницы"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+
+&lt;!-- Open Graph (для соцсетей) --&gt;
+&lt;meta property="og:title" content="Заголовок"&gt;
+&lt;meta property="og:description" content="Описание"&gt;
+&lt;meta property="og:image" content="cover.jpg"&gt;
+&lt;meta property="og:type" content="website"&gt;
+
+&lt;!-- Twitter Cards --&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;</code></pre>
+
+        <h2>favicon</h2>
+        <pre><code>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+&lt;link rel="icon" href="/icon.svg" type="image/svg+xml"&gt;
+&lt;link rel="apple-touch-icon" href="/apple-touch-icon.png"&gt;</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Проверь свой сайт на <a href="https://web.dev/measure/" target="_blank">web.dev/measure</a> — получишь список того, что улучшить.</div>
+      `
+    }
+  },
+
+  /* ==================== CSS ==================== */
+  'css-basics': {
+    cat: 'css',
+    num: '04',
+    title: 'Основы CSS',
+    lead: 'Селекторы, каскад, box model, типографика и цвета — фундамент стилизации.',
+    meta: ['⏱ 5 часов', '✍️ 5 заданий', '🔵 CSS'],
+    anchors: [
+      { id: 'connect', label: 'Подключение' },
+      { id: 'selectors', label: 'Селекторы' },
+      { id: 'cascade', label: 'Каскад' },
+      { id: 'box', label: 'Box Model' },
+      { id: 'colors', label: 'Цвета' },
+    ],
+    levels: {
+      basic: `
+        <h2>Что такое CSS</h2>
+        <p><strong>CSS</strong> (Cascading Style Sheets) — язык стилей, описывающий внешний вид элементов.</p>
+
+        <h2 id="connect">Способы подключения</h2>
+        <pre><code>&lt;!-- Внешний файл (лучший способ) --&gt;
+&lt;link rel="stylesheet" href="style.css"&gt;
+
+&lt;!-- Внутренний --&gt;
+&lt;style&gt; body { color: red; } &lt;/style&gt;
+
+&lt;!-- Инлайновый (не рекомендуется) --&gt;
+&lt;p style="color: red;"&gt;Текст&lt;/p&gt;</code></pre>
+
+        <h2 id="selectors">Селекторы</h2>
+        <pre><code>/* по тегу */
+p { color: #333; }
+
+/* по классу */
+.card { padding: 16px; }
+
+/* по id */
+#title { font-size: 2rem; }
+
+/* по атрибуту */
+input[type="email"] { border-color: green; }
+
+/* вложенный */
+.card p { color: gray; }
+
+/* дочерний */
+.menu > li { padding: 4px; }
+
+/* соседний */
+h2 + p { margin-top: 0; }
+
+/* псевдокласс */
+button:hover { background: blue; }
+li:nth-child(2n) { background: #eee; }
+input:focus { outline: 2px solid blue; }
+
+/* псевдоэлемент */
+.card::before { content: "★ "; }
+.card::after { content: ""; }
+p::first-line { font-weight: bold; }</code></pre>
+
+        <h2 id="cascade">Каскад и специфичность</h2>
+        <table class="table">
+          <thead><tr><th>Селектор</th><th>Вес</th></tr></thead>
+          <tbody>
+            <tr><td>!important</td><td>10000</td></tr>
+            <tr><td>inline style</td><td>1000</td></tr>
+            <tr><td>#id</td><td>100</td></tr>
+            <tr><td>.class, :hover, [attr]</td><td>10</td></tr>
+            <tr><td>тег</td><td>1</td></tr>
+          </tbody>
+        </table>
+        <div class="note note--warn">⚠️ Не используй <code>!important</code> без крайней нужды — это код-смрад.</div>
+
+        <h2 id="box">Box Model</h2>
+        <pre><code>.box {
+  width: 200px;
+  padding: 20px;       /* внутри */
+  border: 2px solid;   /* рамка */
+  margin: 20px;        /* снаружи */
+  box-sizing: border-box; /* ширина включает padding + border */
+}</code></pre>
+        <div class="note">💡 Всегда добавляй глобально:
+<pre><code>*, *::before, *::after { box-sizing: border-box; }</code></pre></div>
+
+        <h2 id="colors">Цвета и единицы</h2>
+        <pre><code>color: #38bdf8;                 /* hex */
+color: rgb(56, 189, 248);       /* rgb */
+color: rgba(56, 189, 248, .5);  /* прозрачность */
+color: hsl(199 89% 60% / .5);   /* hsl */
+
+/* Единицы */
+px, %, em, rem, vw, vh, ch, vmin, vmax
+/* Лучше всего: rem для текста, % / vw для контейнеров */</code></pre>
+      `,
+      advanced: `
+        <h2>CSS-переменные</h2>
+        <pre><code>:root {
+  --accent: #38bdf8;
+  --radius: 12px;
+  --spacing: 16px;
+}
+
+.btn {
+  background: var(--accent);
+  border-radius: var(--radius);
+  padding: var(--spacing);
+}</code></pre>
+        <p>Переменные позволяют менять тему в одном месте.</p>
+
+        <h2>Наследование и initial / inherit</h2>
+        <pre><code>.reset {
+  all: unset;          /* сброс всех свойств */
+  color: inherit;      /* наследовать */
+  margin: initial;     /* вернуть по умолчанию */
+}</code></pre>
+
+        <h2>Современные функции</h2>
+        <pre><code>/* clamp: min / preferred / max */
+font-size: clamp(1rem, 2vw + 0.5rem, 2rem);
+
+/* calc */
+width: calc(100% - 32px);
+
+/* min / max */
+width: min(100%, 1200px);
+height: max(50vh, 400px);
+
+/* aspect-ratio */
+aspect-ratio: 16 / 9;
+
+/* gap — не только для flex/grid */
+.column-gap { column-gap: 20px; }</code></pre>
+
+        <h2>Цветовые функции</h2>
+        <pre><code>color: hsl(199 89% 60%);
+color: oklch(75% 0.15 250);         /* новый стандарт */
+color: color-mix(in oklch, red 40%, blue);</code></pre>
+
+        <h2>@supports — feature detection</h2>
+        <pre><code>@supports (display: grid) {
+  .layout { display: grid; }
+}
+
+@supports not (aspect-ratio: 1) {
+  /* fallback */
+}</code></pre>
+
+        <h2>Псевдоклассы состояний</h2>
+        <pre><code>:hover      — мышь над элементом
+:focus      — фокус (не забудь!)
+:focus-visible — фокус только с клавиатуры
+:active     — клик
+:disabled   — выключен
+:checked    — чекбокс/радио
+:has()      — родитель, у которого есть X внутри
+
+.card:has(input:checked) {
+  border-color: green;
+}</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Изучи <code>:has()</code>, <code>clamp()</code>, CSS-переменные и <code>gap</code> — это минимальный набор современного CSS.</div>
+      `
+    }
+  },
+
+  'css-layout': {
+    cat: 'css',
+    num: '05',
+    title: 'Flexbox и Grid',
+    lead: 'Современная вёрстка: Flexbox для строк/колонок, Grid для двумерных сеток, position.',
+    meta: ['⏱ 6 часов', '✍️ 5 заданий', '🔵 CSS'],
+    anchors: [
+      { id: 'flex', label: 'Flexbox' },
+      { id: 'grid', label: 'Grid' },
+      { id: 'position', label: 'Position' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="flex">Flexbox</h2>
+        <pre><code>.container {
+  display: flex;
+  justify-content: center;   /* по главной оси */
+  align-items: center;       /* по поперечной */
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.item {
+  flex: 1;           /* расти */
+  flex-basis: 200px; /* базовая ширина */
+}</code></pre>
+
+        <h3>justify-content</h3>
+        <ul>
+          <li><code>flex-start</code> — в начало</li>
+          <li><code>center</code> — по центру</li>
+          <li><code>flex-end</code> — в конец</li>
+          <li><code>space-between</code> — крайние по краям</li>
+          <li><code>space-around</code> — равные отступы</li>
+          <li><code>space-evenly</code> — равные отступы везде</li>
+        </ul>
+
+        <h3>align-items</h3>
+        <ul>
+          <li><code>stretch</code> — растянуть (по умолчанию)</li>
+          <li><code>center</code></li>
+          <li><code>flex-start</code> / <code>flex-end</code></li>
+          <li><code>baseline</code> — по базовой линии текста</li>
+        </ul>
+
+        <h2 id="grid">CSS Grid</h2>
+        <pre><code>.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* Grid Areas */
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+}
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main   { grid-area: main; }
+.footer { grid-area: footer; }</code></pre>
+
+        <div class="note">💡 <b>Flexbox</b> — одна ось. <b>Grid</b> — две оси.</div>
+
+        <h2 id="position">Position</h2>
+        <table class="table">
+          <thead><tr><th>Значение</th><th>Поведение</th></tr></thead>
+          <tbody>
+            <tr><td><code>static</code></td><td>по умолчанию</td></tr>
+            <tr><td><code>relative</code></td><td>сдвиг от своего места</td></tr>
+            <tr><td><code>absolute</code></td><td>относительно positioned-родителя</td></tr>
+            <tr><td><code>fixed</code></td><td>прилипает к окну</td></tr>
+            <tr><td><code>sticky</code></td><td>прилипает при скролле</td></tr>
+          </tbody>
+        </table>
+      `,
+      advanced: `
+        <h2>Современные приёмы Grid</h2>
+        <h3>Auto-fit vs auto-fill</h3>
+        <pre><code>.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}</code></pre>
+        <ul>
+          <li><code>auto-fit</code> — схлопывает пустые ячейки</li>
+          <li><code>auto-fill</code> — оставляет пустые</li>
+        </ul>
+
+        <h3>Именованные линии</h3>
+        <pre><code>.grid {
+  grid-template-columns: [start] 1fr [mid] 2fr [end];
+}
+.item { grid-column: start / end; }</code></pre>
+
+        <h3>Grid + Subgrid</h3>
+        <pre><code>.parent { display: grid; grid-template-columns: 1fr 1fr; }
+.child  { display: grid; grid-template-columns: subgrid; }</code></pre>
+
+        <h2>Flexbox продвинуто</h2>
+        <pre><code>.item {
+  flex: 1 1 200px;  /* grow shrink basis */
+}
+
+/* Центрирование и перенос */
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+}</code></pre>
+
+        <h2>Контейнерные запросы</h2>
+        <pre><code>.card-container { container-type: inline-size; }
+
+@container (min-width: 400px) {
+  .card { display: flex; gap: 16px; }
+}</code></pre>
+        <p>Адаптив по размеру контейнера, а не viewport.</p>
+
+        <h2>Pseudo-elements для layout</h2>
+        <pre><code>.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Играй <a href="https://flexboxfroggy.com/#ru" target="_blank">Flexbox Froggy</a> и <a href="https://cssgridgarden.com/#ru" target="_blank">Grid Garden</a> — лучший способ запомнить свойства.</div>
+      `
+    }
+  },
+
+  'css-responsive': {
+    cat: 'css',
+    num: '06',
+    title: 'Адаптив и анимации',
+    lead: 'Media queries, transition, transform, @keyframes — делаем интерфейс «живым».',
+    meta: ['⏱ 4 часа', '✍️ 4 задания', '🔵 CSS'],
+    anchors: [
+      { id: 'media', label: 'Media Queries' },
+      { id: 'transition', label: 'Transition' },
+      { id: 'keyframes', label: '@keyframes' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="media">Media Queries</h2>
+        <pre><code>/* Mobile-first */
+.container { padding: 16px; }
+
+@media (min-width: 768px) {
+  .container { padding: 32px; }
+}
+
+@media (min-width: 1024px) {
+  .container { max-width: 1200px; margin: auto; }
+}</code></pre>
+        <div class="note">💡 Пиши <b>mobile-first</b>: сначала мобильные, потом <code>min-width</code>.</div>
+
+        <h2 id="transition">Transition</h2>
+        <pre><code>.btn {
+  background: #38bdf8;
+  transition: background .3s ease, transform .3s ease;
+}
+
+.btn:hover {
+  background: #a855f7;
+  transform: translateY(-2px);
+}</code></pre>
+
+        <h2>Transform</h2>
+        <pre><code>transform: translate(10px, 20px);
+transform: scale(1.2);
+transform: rotate(45deg);
+transform: translateX(50%) scale(1.1);</code></pre>
+
+        <h2 id="keyframes">@keyframes</h2>
+        <pre><code>.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: #38bdf8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}</code></pre>
+      `,
+      advanced: `
+        <h2>Container Queries</h2>
+        <pre><code>.card-container { container-type: inline-size; }
+
+@container (min-width: 400px) {
+  .card { display: flex; }
+}</code></pre>
+
+        <h2>prefers-color-scheme и prefers-reduced-motion</h2>
+        <pre><code>@media (prefers-color-scheme: dark) {
+  body { background: #0b1120; color: #e2e8f0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}</code></pre>
+
+        <h2>will-change и оптимизация</h2>
+        <pre><code>.animated {
+  will-change: transform;  /* подсказка браузеру */
+}
+/* удалять после анимации, иначе навредит */</code></pre>
+
+        <h2>@keyframes сложные</h2>
+        <pre><code>@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-20px); }
+}
+
+.bouncer {
+  animation: bounce 1s ease-in-out infinite;
+  animation-delay: 100ms;
+}</code></pre>
+
+        <h2>Scroll-driven анимации (новьё)</h2>
+        <pre><code>.animate-on-scroll {
+  animation: fade-in linear;
+  animation-timeline: view();
+  animation-range: entry 0% entry 100%;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: none; }
+}</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Анимируй только <code>transform</code> и <code>opacity</code> — они не вызывают перерасчёт layout и работают на GPU.</div>
+      `
+    }
+  },
+
+  'css-advanced': {
+    cat: 'css',
+    num: '07',
+    title: 'Продвинутый CSS',
+    lead: 'Архитектура CSS, BEM, вложенность, слои, современные функции.',
+    meta: ['⏱ 5 часов', '✍️ 3 задания', '🔵 CSS'],
+    anchors: [
+      { id: 'bem', label: 'BEM' },
+      { id: 'nesting', label: 'Вложенность' },
+      { id: 'layers', label: '@layer' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="bem">Методология BEM</h2>
+        <p><b>B</b>lock — самостоятельный компонент, <b>E</b>lement — часть блока, <b>M</b>odifier — модификатор.</p>
+        <pre><code>.card { }
+.card__title { }
+.card__body { }
+.card--featured { }</code></pre>
+        <ul>
+          <li>Понятно, к чему относится класс</li>
+          <li>Низкая специфичность (только классы)</li>
+          <li>Легко переиспользовать</li>
+        </ul>
+
+        <h2>Сброс стилей</h2>
+        <pre><code>*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+img, video { max-width: 100%; display: block; }
+button { font: inherit; cursor: pointer; }
+a { color: inherit; text-decoration: none; }</code></pre>
+
+        <h2>Утилитарные классы</h2>
+        <pre><code>.text-center { text-align: center; }
+.mt-4 { margin-top: 1rem; }
+.hidden { display: none; }
+.flex { display: flex; }</code></pre>
+      `,
+      advanced: `
+        <h2 id="nesting">Вложенность (native CSS nesting)</h2>
+        <pre><code>.card {
+  padding: 16px;
+
+  &__title {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+
+  @media (min-width: 768px) {
+    padding: 24px;
+  }
+}</code></pre>
+
+        <h2 id="layers">@layer — контроль каскада</h2>
+        <pre><code>@layer reset, base, components, utilities;
+
+@layer reset {
+  * { margin: 0; }
+}
+
+@layer base {
+  body { font-family: sans-serif; }
+}
+
+@layer components {
+  .btn { padding: 12px; }
+}
+
+@layer utilities {
+  .hidden { display: none; }
+}</code></pre>
+        <p>Порядок слоёв определяет приоритет — не нужна борьба со специфичностью.</p>
+
+        <h2>CSS-модули (в проектах)</h2>
+        <p>В React/Vue используй CSS-модули или Tailwind — тема отдельного курса, но паттерн:</p>
+        <pre><code>/* Card.module.css */
+.card { padding: 16px; }
+
+/* Card.jsx */
+import styles from './Card.module.css';
+&lt;div className={styles.card}&gt;...&lt;/div&gt;</code></pre>
+
+        <h2>Производительность</h2>
+        <ul>
+          <li>Анимируй <code>transform</code> и <code>opacity</code></li>
+          <li>Избегай глубоких селекторов</li>
+          <li>Не используй <code>!important</code></li>
+          <li>Пиши <code>content-visibility: auto</code> для длинных списков</li>
+        </ul>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Если проект вырастает до 1000+ строк — пора задуматься о Tailwind, CSS-модулях или дизайн-системе.</div>
+      `
+    }
+  },
+
+  /* ==================== JS ==================== */
+  'js-basics': {
+    cat: 'js',
+    num: '08',
+    title: 'Основы JavaScript',
+    lead: 'Переменные, типы данных, операторы, условия, циклы.',
+    meta: ['⏱ 5 часов', '✍️ 6 заданий', '🟡 JS'],
+    anchors: [
+      { id: 'vars', label: 'Переменные' },
+      { id: 'types', label: 'Типы' },
+      { id: 'ops', label: 'Операторы' },
+      { id: 'cond', label: 'Условия' },
+      { id: 'loops', label: 'Циклы' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="vars">Переменные</h2>
+        <pre><code>const name = 'Алиса';   // нельзя переприсвоить
+let age = 25;           // можно менять
+age = 26;               // OK
+
+// var — устаревший, не используем</code></pre>
+        <div class="note">💡 Правило: <code>const</code> по умолчанию, <code>let</code> — только если меняешь.</div>
+
+        <h2 id="types">Типы данных</h2>
+        <table class="table">
+          <thead><tr><th>Тип</th><th>Пример</th></tr></thead>
+          <tbody>
+            <tr><td>string</td><td><code>'текст'</code>, <code>\`шаблон \${x}\`</code></td></tr>
+            <tr><td>number</td><td><code>42</code>, <code>3.14</code></td></tr>
+            <tr><td>boolean</td><td><code>true</code>, <code>false</code></td></tr>
+            <tr><td>null</td><td><code>null</code></td></tr>
+            <tr><td>undefined</td><td><code>undefined</code></td></tr>
+            <tr><td>object</td><td><code>{ name: 'A' }</code></td></tr>
+            <tr><td>array</td><td><code>[1, 2, 3]</code></td></tr>
+            <tr><td>symbol</td><td><code>Symbol('id')</code></td></tr>
+            <tr><td>bigint</td><td><code>10n</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="ops">Операторы</h2>
+        <pre><code>5 + 3      // 8
+'5' + 3    // '53'
+5 === '5'  // false (строгое)
+5 == '5'   // true (не используй!)
+10 % 3     // 1
+2 ** 10    // 1024
+true && false // false
+true || false // true
+!true      // false
+null ?? 'default' // 'default' (nullish)
+0 || 'default'    // 'default' (falsy)</code></pre>
+
+        <h2 id="cond">Условия</h2>
+        <pre><code>const score = 85;
+
+if (score >= 90) {
+  console.log('Отлично');
+} else if (score >= 75) {
+  console.log('Хорошо');
+} else {
+  console.log('Повтори');
+}
+
+// Тернарник
+const status = score >= 60 ? 'сдал' : 'не сдал';
+
+// switch
+switch (day) {
+  case 'mon': console.log('Пн'); break;
+  case 'tue': console.log('Вт'); break;
+  default: console.log('Другой');
+}</code></pre>
+
+        <h2 id="loops">Циклы</h2>
+        <pre><code>for (let i = 0; i < 5; i++) { }
+
+let i = 0;
+while (i < 5) { i++; }
+
+for (const fruit of ['apple', 'banana']) { }
+
+for (const key in obj) { }</code></pre>
+      `,
+      advanced: `
+        <h2>Типизация и приведение</h2>
+        <pre><code>typeof 42        // 'number'
+typeof 'text'    // 'string'
+typeof null      // 'object' (историческая ошибка)
+typeof []        // 'object'
+typeof function() {} // 'function'
+
+Array.isArray([])  // true
+Number('42')       // 42
+String(42)         // '42'
+Boolean('')        // false
+parseInt('42px')   // 42
+parseFloat('3.14') // 3.14</code></pre>
+
+        <h2>Falsy и truthy</h2>
+        <pre><code>// Falsy: false, 0, '', null, undefined, NaN
+// Всё остальное — truthy (включая [], {})
+
+if ([]) console.log('да');  // сработает!
+if ('') console.log('нет'); // не сработает</code></pre>
+
+        <h2>Строгий режим</h2>
+        <pre><code>'use strict';
+// ловит типичные ошибки раньше
+// в модулях и классах включён по умолчанию</code></pre>
+
+        <h2>Optional chaining и nullish coalescing</h2>
+        <pre><code>const user = { profile: { name: 'Алиса' } };
+
+user?.profile?.name;      // 'Алиса'
+user?.missing?.name;      // undefined
+
+const value = null ?? 'default'; // 'default'
+const value2 = 0 ?? 'default';   // 0</code></pre>
+
+        <h2>Оператор запятая и приоритеты</h2>
+        <pre><code>let x = (1, 2, 3); // x = 3
+
+// Приоритеты: скобки > степень > умножение > сложение</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Открой консоль и поэкспериментируй с <code>typeof</code>, <code>??</code>, <code>?.</code> — это то, что часто спрашивают на собеседованиях.</div>
+      `
+    }
+  },
+
+  'js-functions': {
+    cat: 'js',
+    num: '09',
+    title: 'Функции, массивы, объекты',
+    lead: 'Функции всех видов, методы массивов, работа с объектами и деструктуризация.',
+    meta: ['⏱ 6 часов', '✍️ 7 заданий', '🟡 JS'],
+    anchors: [
+      { id: 'func', label: 'Функции' },
+      { id: 'array', label: 'Массивы' },
+      { id: 'obj', label: 'Объекты' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="func">Функции</h2>
+        <pre><code>// Declaration (поднимается)
+function sum(a, b) {
+  return a + b;
+}
+
+// Expression
+const multiply = function (a, b) {
+  return a * b;
+};
+
+// Arrow
+const divide = (a, b) => a / b;
+
+// Значение по умолчанию
+function greet(name = 'гость') {
+  return \`Привет, \${name}!\`;
+}</code></pre>
+
+        <h2 id="array">Массивы</h2>
+        <pre><code>const numbers = [1, 2, 3, 4, 5];
+
+numbers.map(n => n * 2);           // [2,4,6,8,10]
+numbers.filter(n => n % 2 === 0);  // [2,4]
+numbers.reduce((a, n) => a + n, 0);// 15
+numbers.find(n => n > 3);          // 4
+numbers.findIndex(n => n > 3);     // 3
+numbers.includes(3);               // true
+numbers.length;                    // 5
+numbers.push(6);                   // добавить
+numbers.pop();                     // убрать с конца</code></pre>
+
+        <h2 id="obj">Объекты</h2>
+        <pre><code>const user = {
+  name: 'Алиса',
+  age: 25,
+  greet() {
+    return \`Привет, \${this.name}\`;
+  }
+};
+
+user.name;          // 'Алиса'
+user['age'];        // 25
+user.greet();
+
+// Деструктуризация
+const { name, age } = user;</code></pre>
+      `,
+      advanced: `
+        <h2>Замыкания (closures)</h2>
+        <pre><code>function counter() {
+  let count = 0;
+  return () => ++count;
+}
+
+const inc = counter();
+inc(); // 1
+inc(); // 2</code></pre>
+        <p>Функция «запоминает» переменные из области видимости.</p>
+
+        <h2>Функции высшего порядка</h2>
+        <pre><code>function repeat(n, action) {
+  for (let i = 0; i < n; i++) action(i);
+}
+
+repeat(3, i => console.log(i));</code></pre>
+
+        <h2>this и стрелочные функции</h2>
+        <pre><code>const obj = {
+  name: 'X',
+  regular() { return this.name; },   // this = obj
+  arrow: () => this.name,             // this = внешний
+};
+
+obj.regular(); // 'X'
+obj.arrow();   // undefined</code></pre>
+
+        <h2>Массивы продвинуто</h2>
+        <pre><code>// flat / flatMap
+[[1,2],[3,4]].flat();          // [1,2,3,4]
+[1,2].flatMap(n => [n, n*10]); // [1,10,2,20]
+
+// sort — мутирует!
+[3,1,2].sort((a, b) => a - b); // [1,2,3]
+
+// some / every
+[1,2,3].some(n => n > 2);  // true
+[1,2,3].every(n => n > 0); // true
+
+// Array.from
+Array.from('abc');         // ['a','b','c']
+Array.from({length: 3}, (_, i) => i); // [0,1,2]
+
+// Spread и rest
+const a = [1,2,3];
+const b = [...a, 4];       // [1,2,3,4]
+
+function sum(...nums) {
+  return nums.reduce((a, n) => a + n, 0);
+}</code></pre>
+
+        <h2>Объекты: Object.*</h2>
+        <pre><code>Object.keys(user);    // ['name','age']
+Object.values(user);  // ['Алиса', 25]
+Object.entries(user); // [['name','Алиса'],['age',25]]
+
+Object.freeze(obj);   // запретить изменения
+Object.assign({}, a, b); // слияние
+
+// Spread
+const merged = { ...a, ...b };
+const updated = { ...user, age: 26 };</code></pre>
+
+        <h2>Map, Set</h2>
+        <pre><code>const map = new Map();
+map.set('a', 1);
+map.get('a');        // 1
+map.has('a');        // true
+map.size;
+
+const set = new Set([1,2,2,3]); // {1,2,3}
+set.add(4);
+set.has(2);</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> В 90% случаев вместо <code>for</code> можно использовать <code>map</code>, <code>filter</code>, <code>reduce</code>, <code>find</code>. Учись думать «декларативно».</div>
+      `
+    }
+  },
+
+  'js-dom': {
+    cat: 'js',
+    num: '10',
+    title: 'DOM и события',
+    lead: 'Находим элементы, меняем их, реагируем на действия пользователя.',
+    meta: ['⏱ 6 часов', '✍️ 6 заданий', '🟡 JS'],
+    anchors: [
+      { id: 'find', label: 'Поиск' },
+      { id: 'modify', label: 'Изменение' },
+      { id: 'events', label: 'События' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="find">Поиск элементов</h2>
+        <pre><code>document.getElementById('title');
+document.querySelector('.card');
+document.querySelectorAll('.item'); // NodeList</code></pre>
+
+        <h2 id="modify">Изменение</h2>
+        <pre><code>const el = document.querySelector('.title');
+
+el.textContent = 'Новый текст';
+el.innerHTML = '&lt;strong&gt;HTML&lt;/strong&gt;';
+el.classList.add('active');
+el.classList.remove('active');
+el.classList.toggle('active');
+el.style.color = 'red';
+el.setAttribute('data-id', '42');</code></pre>
+
+        <h2>Создание элементов</h2>
+        <pre><code>const li = document.createElement('li');
+li.textContent = 'Новый пункт';
+list.appendChild(li);</code></pre>
+
+        <h2 id="events">События</h2>
+        <pre><code>const btn = document.querySelector('#btn');
+
+btn.addEventListener('click', () => {
+  console.log('Клик!');
+});
+
+input.addEventListener('input', (e) => {
+  console.log(e.target.value);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') console.log('Esc');
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+});</code></pre>
+      `,
+      advanced: `
+        <h2>Делегирование событий</h2>
+        <pre><code>list.addEventListener('click', (e) => {
+  const item = e.target.closest('.item');
+  if (!item) return;
+  console.log('Клик по', item.dataset.id);
+});</code></pre>
+        <p>Один обработчик на родителя — быстрее и работает для новых элементов.</p>
+
+        <h2>Всплытие и погружение</h2>
+        <pre><code>el.addEventListener('click', handler);          // всплытие
+el.addEventListener('click', handler, true);    // погружение
+e.stopPropagation();   // остановить
+e.preventDefault();    // отменить дефолт</code></pre>
+
+        <h2>dataset</h2>
+        <pre><code>&lt;button data-action="delete" data-id="42"&gt;×&lt;/button&gt;
+
+btn.dataset.action;  // 'delete'
+btn.dataset.id;      // '42'</code></pre>
+
+        <h2>Клонирование и вставка</h2>
+        <pre><code>const clone = el.cloneNode(true);  // глубокая
+parent.insertBefore(newEl, refEl);
+refEl.replaceWith(newEl);
+el.remove();</code></pre>
+
+        <h2>MutationObserver</h2>
+        <pre><code>const observer = new MutationObserver(mutations => {
+  mutations.forEach(m => console.log(m.type));
+});
+
+observer.observe(list, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+});</code></pre>
+
+        <h2>RequestAnimationFrame</h2>
+        <pre><code>function loop() {
+  // анимация
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Работай с <code>classList</code>, а не inline-стилями — CSS отвечает за внешний вид, JS — за логику.</div>
+      `
+    }
+  },
+
+  'js-es6': {
+    cat: 'js',
+    num: '11',
+    title: 'ES6+ и современный JS',
+    lead: 'Деструктуризация, spread, модули, классы, генераторы — то, что нужно в реальных проектах.',
+    meta: ['⏱ 5 часов', '✍️ 5 заданий', '🟡 JS'],
+    anchors: [
+      { id: 'destr', label: 'Деструктуризация' },
+      { id: 'modules', label: 'Модули' },
+      { id: 'class', label: 'Классы' },
+    ],
+    levels: {
+      basic: `
+        <h2>let / const / шаблонные строки</h2>
+        <pre><code>const name = 'Алиса';
+const greeting = \`Привет, \${name}! 2 + 2 = \${2 + 2}\`;
+// многострочные
+const html = \`
+  &lt;div&gt;\${name}&lt;/div&gt;
+\`;</code></pre>
+
+        <h2 id="destr">Деструктуризация</h2>
+        <pre><code>// массив
+const [a, b] = [1, 2];
+
+// объект
+const { name, age = 0 } = user;
+
+// переименование
+const { name: userName } = user;
+
+// вложенная
+const { profile: { city } } = user;
+
+// в параметрах
+function render({ title, items }) { }</code></pre>
+
+        <h2>Spread / rest</h2>
+        <pre><code>// spread
+const arr = [...a, ...b];
+const obj = { ...a, ...b };
+
+// rest
+function log(...args) { }
+
+const { x, ...rest } = obj;
+const [first, ...others] = arr;</code></pre>
+
+        <h2 id="modules">Модули</h2>
+        <pre><code>// math.js
+export function sum(a, b) { return a + b; }
+export const PI = 3.14;
+
+// main.js
+import { sum, PI } from './math.js';
+import * as math from './math.js';
+
+// default
+export default function () { }
+import myFn from './module.js';</code></pre>
+        <div class="note">💡 Модули работают через <code>&lt;script type="module"&gt;</code> или сборщики (Vite, Webpack).</div>
+      `,
+      advanced: `
+        <h2 id="class">Классы</h2>
+        <pre><code>class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    return \`\${this.name} издаёт звук\`;
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name);
+  }
+
+  speak() {
+    return \`\${this.name} лает\`;
+  }
+}
+
+const d = new Dog('Рекс');
+d.speak(); // 'Рекс лает'</code></pre>
+
+        <h2>Приватные поля</h2>
+        <pre><code>class Counter {
+  #count = 0;
+
+  inc() { this.#count++; }
+  get count() { return this.#count; }
+}</code></pre>
+
+        <h2>Геттеры и сеттеры</h2>
+        <pre><code>class User {
+  #age;
+  constructor(age) { this.#age = age; }
+
+  get age() { return this.#age; }
+  set age(v) {
+    if (v < 0) throw new Error('Возраст < 0');
+    this.#age = v;
+  }
+}</code></pre>
+
+        <h2>Генераторы</h2>
+        <pre><code>function* range(start, end) {
+  for (let i = start; i < end; i++) yield i;
+}
+
+for (const n of range(1, 4)) console.log(n); // 1, 2, 3</code></pre>
+
+        <h2>Symbol и WeakMap</h2>
+        <pre><code>const id = Symbol('id');
+obj[id] = 42;
+
+const wm = new WeakMap();
+wm.set(obj, 'данные'); // не мешает GC</code></pre>
+
+        <h2>Прокси и Reflect</h2>
+        <pre><code>const handler = {
+  get(target, prop) {
+    return prop in target ? target[prop] : 'нет';
+  }
+};
+
+const proxy = new Proxy({}, handler);
+proxy.anything; // 'нет'</code></pre>
+
+        <h2>Итераторы</h2>
+        <pre><code>const iterable = {
+  [Symbol.iterator]() {
+    let i = 0;
+    return { next: () => ({ value: i++, done: i > 3 }) };
+  }
+};
+
+for (const v of iterable) console.log(v); // 0, 1, 2</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Большинство из этого нужно, чтобы понимать библиотеки. В обычном коде — 80% это деструктуризация, spread, стрелочные функции и async/await.</div>
+      `
+    }
+  },
+
+  'js-async': {
+    cat: 'js',
+    num: '12',
+    title: 'Async, Promise, fetch',
+    lead: 'Асинхронный JS: промисы, async/await, работа с API, обработка ошибок.',
+    meta: ['⏱ 6 часов', '✍️ 5 заданий', '🟡 JS'],
+    anchors: [
+      { id: 'eventloop', label: 'Event Loop' },
+      { id: 'promise', label: 'Promise' },
+      { id: 'fetch', label: 'fetch' },
+    ],
+    levels: {
+      basic: `
+        <h2 id="promise">Promise</h2>
+        <pre><code>fetch('https://api.example.com/data')
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err))
+  .finally(() => console.log('Готово'));</code></pre>
+
+        <h2>async / await</h2>
+        <pre><code>async function loadUsers() {
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const users = await res.json();
+    return users;
+  } catch (err) {
+    console.error('Ошибка:', err.message);
+  }
+}
+
+loadUsers().then(users => console.log(users));</code></pre>
+
+        <h2 id="fetch">fetch + DOM</h2>
+        <pre><code>async function showUsers() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/users?_limit=3');
+  const users = await res.json();
+
+  document.querySelector('#list').innerHTML = users
+    .map(u => \`&lt;li&gt;\${u.name} — \${u.email}&lt;/li&gt;\`)
+    .join('');
+}</code></pre>
+      `,
+      advanced: `
+        <h2 id="eventloop">Event Loop</h2>
+        <pre><code>console.log('1');
+setTimeout(() => console.log('2'), 0);
+Promise.resolve().then(() => console.log('3'));
+console.log('4');
+
+// 1, 4, 3, 2
+// sync → microtasks (Promise) → macrotasks (setTimeout)</code></pre>
+
+        <h2>Promise.all / race / any / allSettled</h2>
+        <pre><code>// все параллельно, упадёт если хоть один fail
+const [a, b] = await Promise.all([fetchA(), fetchB()]);
+
+// первый успешный
+const first = await Promise.race([slow(), fast()]);
+
+// все, даже с ошибками
+const results = await Promise.allSettled([a(), b()]);
+
+// первый успешный, игнор ошибок
+const any = await Promise.any([a(), b()]);</code></pre>
+
+        <h2>AbortController — отмена запроса</h2>
+        <pre><code>const ctrl = new AbortController();
+fetch(url, { signal: ctrl.signal });
+
+// отмена через 5 сек
+setTimeout(() => ctrl.abort(), 5000);</code></pre>
+
+        <h2>Таймауты и retry</h2>
+        <pre><code>async function fetchWithTimeout(url, ms = 5000) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { signal: ctrl.signal });
+  } finally {
+    clearTimeout(id);
+  }
+}
+
+async function retry(fn, attempts = 3) {
+  for (let i = 0; i < attempts; i++) {
+    try { return await fn(); }
+    catch (e) { if (i === attempts - 1) throw e; }
+  }
+}</code></pre>
+
+        <h2>Обработка JSON + ошибок</h2>
+        <pre><code>async function api(path, options = {}) {
+  const res = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.message || \`HTTP \${res.status}\`);
+  }
+
+  return res.status === 204 ? null : res.json();
+}</code></pre>
+
+        <div class="note note--pro">💡 <b>Pro:</b> Никогда не забывай про <code>try/catch</code> и <code>res.ok</code>. <code>fetch</code> не бросает ошибку при 404 — только при сетевых сбоях.</div>
+      `
+    }
+  },
+
+  /* ==================== PROJECTS ==================== */
+  projects: {
+    cat: 'proj',
+    num: '13',
+    title: 'Финальные проекты',
+    lead: 'Три проекта, которые станут основой портфолио.',
+    meta: ['⏱ 15–20 часов', '🏆 Портфолио', '🟢 Проекты'],
+    anchors: [],
+    levels: {
+      basic: `
+        <h2>Что делать</h2>
+        <div class="projects-grid">
+          <div class="project">
+            <div class="project__icon">✅</div>
+            <h3>1. Todo List</h3>
+            <p>Задачи с добавлением, удалением, фильтрацией и localStorage.</p>
+            <ul class="project__tags"><li>DOM</li><li>Events</li><li>localStorage</li></ul>
+          </div>
+          <div class="project">
+            <div class="project__icon">🌤️</div>
+            <h3>2. Weather App</h3>
+            <p>Погода в любом городе: geocoding + API + обработка ошибок.</p>
+            <ul class="project__tags"><li>fetch</li><li>async/await</li><li>API</li></ul>
+          </div>
+          <div class="project">
+            <div class="project__icon">🎨</div>
+            <h3>3. Landing Page</h3>
+            <p>Адаптивный лендинг с шапкой, фичами, тарифами, формой и анимациями.</p>
+            <ul class="project__tags"><li>Flexbox</li><li>Grid</li><li>Animation</li></ul>
+          </div>
+        </div>
+
+        <h2>Требования</h2>
+        <ul>
+          <li>3 файла: <code>index.html</code>, <code>style.css</code>, <code>app.js</code></li>
+          <li>Адаптив (мобильный + десктоп)</li>
+          <li>Семантическая разметка</li>
+          <li>Код отформатирован</li>
+          <li>Выложен на GitHub Pages</li>
+        </ul>
+      `,
+      advanced: `
+        <h2>Усложни каждый проект</h2>
+
+        <h3>Todo List Pro</h3>
+        <ul>
+          <li>Редактирование задачи по двойному клику</li>
+          <li>Drag-and-drop (можно через HTML5 API)</li>
+          <li>Счётчик и фильтры, работающие через URL hash</li>
+          <li>Тёмная тема через <code>prefers-color-scheme</code></li>
+          <li>История действий (undo / redo)</li>
+        </ul>
+
+        <h3>Weather App Pro</h3>
+        <ul>
+          <li>Геолокация пользователя (<code>navigator.geolocation</code>)</li>
+          <li>Прогноз на 5 дней</li>
+          <li>Кэширование в <code>localStorage</code> на 10 минут</li>
+          <li>Красивые иконки через SVG + анимации</li>
+          <li>Skeleton loader пока грузится</li>
+        </ul>
+
+        <h3>Landing Page Pro</h3>
+        <ul>
+          <li>Scroll-driven анимации</li>
+          <li>Валидация формы + сообщения об ошибках</li>
+          <li>Мобильное меню с анимацией</li>
+          <li>SEO: meta-теги, OG, structured data</li>
+          <li>Lighthouse 90+ по всем метрикам</li>
+        </ul>
+
+        <h2>Деплой</h2>
+        <pre><code># GitHub Pages
+1. Создай репозиторий
+2. Загрузи файлы
+3. Settings → Pages → Branch: main → Save
+4. Сайт: https://username.github.io/repo-name/</code></pre>
+
+        <h2>Что дальше</h2>
+        <ul>
+          <li>React / Vue / Svelte</li>
+          <li>TypeScript</li>
+          <li>Node.js / Express</li>
+          <li>Тестирование (Jest, Playwright)</li>
+        </ul>
+      `
+    }
+  },
+
+  /* ==================== ШПАРГАЛКИ ==================== */
+  cheatsheet: {
+    cat: 'ref',
+    num: '📖',
+    title: 'Шпаргалки',
+    lead: 'Краткий справочник по HTML, CSS и JS — держи открытым во время работы.',
+    meta: ['📖 Справочник', '🟣 Все темы'],
+    anchors: [],
+    levels: {
+      basic: `
+        <h2>HTML — частые теги</h2>
+        <pre><code>&lt;h1&gt;–&lt;h6&gt;     заголовки
+&lt;p&gt;             параграф
+&lt;a href=""&gt;      ссылка
+&lt;img src="" alt=""&gt;  картинка
+&lt;ul&gt;/&lt;ol&gt;/&lt;li&gt;  списки
+&lt;table&gt;         таблица
+&lt;form&gt;/&lt;input&gt;  форма
+&lt;button&gt;        кнопка
+&lt;div&gt;           блок
+&lt;span&gt;          строчный</code></pre>
+
+        <h2>CSS — частые свойства</h2>
+        <pre><code>display: flex | grid | block | inline | none;
+position: static | relative | absolute | fixed | sticky;
+color, background, border, border-radius;
+margin, padding, gap;
+font-size, font-weight, line-height;
+width, height, max-width;
+opacity, visibility, overflow;
+transform, transition, animation;
+z-index, cursor, box-shadow;</code></pre>
+
+        <h2>JS — массивы</h2>
+        <pre><code>.map(fn)        → новый массив (преобразование)
+.filter(fn)     → новый массив (отбор)
+.reduce(fn, x)  → одно значение (свёртка)
+.find(fn)       → первый подходящий
+.findIndex(fn)  → индекс
+.includes(x)    → true/false
+.some(fn)       → хоть один
+.every(fn)      → все
+.sort(fn)       → мутирует!
+.slice(a,b)     → копия
+.splice(a,n)    → мутирует!
+[...arr]        → копия</code></pre>
+
+        <h2>JS — объекты</h2>
+        <pre><code>Object.keys(o)     → ключи
+Object.values(o)   → значения
+Object.entries(o)  → [k, v]
+{ ...a, ...b }     → слияние
+const {x} = o      → деструктуризация</code></pre>
+
+        <h2>JS — DOM</h2>
+        <pre><code>document.querySelector('.x');
+document.querySelectorAll('.x');
+el.textContent = '';
+el.innerHTML = '';
+el.classList.add/remove/toggle/contains
+el.dataset.id
+el.style.color
+el.addEventListener('click', fn);
+el.remove();</code></pre>
+
+        <h2>JS — async</h2>
+        <pre><code>async function f() {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+  } catch (e) {
+    console.error(e);
+  }
+}</code></pre>
+
+        <h2>Полезные ссылки</h2>
+        <ul>
+          <li><a href="https://developer.mozilla.org/ru/" target="_blank">MDN Web Docs</a></li>
+          <li><a href="https://learn.javascript.ru/" target="_blank">JavaScript.info</a></li>
+          <li><a href="https://caniuse.com/" target="_blank">Can I use</a></li>
+          <li><a href="https://css-tricks.com/" target="_blank">CSS-Tricks</a></li>
+          <li><a href="https://flexboxfroggy.com/#ru" target="_blank">Flexbox Froggy</a></li>
+          <li><a href="https://cssgridgarden.com/#ru" target="_blank">Grid Garden</a></li>
+        </ul>
+      `,
+      advanced: `
+        <h2>Паттерны JS</h2>
+        <pre><code>// Модуль (IIFE)
+const counter = (() => {
+  let count = 0;
+  return {
+    inc: () => ++count,
+    get: () => count,
+  };
+})();
+
+// Debounce
+function debounce(fn, ms = 300) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), ms);
+  };
+}
+
+// Throttle
+function throttle(fn, ms = 300) {
+  let last = 0;
+  return (...args) => {
+    const now = Date.now();
+    if (now - last >= ms) {
+      last = now;
+      fn(...args);
+    }
+  };
+}
+
+// Deep clone
+const clone = structuredClone(obj);</code></pre>
+
+        <h2>CSS-паттерны</h2>
+        <pre><code>/* Центрирование */
+.center {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+/* Адаптивная сетка */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* Truncate text */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Многострочный truncate */
+.clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Скрыть скролл, но оставить скроллинг */
+.hide-scroll {
+  scrollbar-width: none;
+}
+.hide-scroll::-webkit-scrollbar { display: none; }</code></pre>
+
+        <h2>Оптимизация</h2>
+        <ul>
+          <li>Минификация CSS/JS</li>
+          <li>Lazy-load картинок (<code>loading="lazy"</code>)</li>
+          <li>WebP/AVIF вместо JPG</li>
+          <li>Preconnect, preload для критичных ресурсов</li>
+          <li>Кэш заголовки</li>
+        </ul>
+
+        <h2>Инструменты</h2>
+        <ul>
+          <li><b>Vite</b> — быстрая сборка</li>
+          <li><b>ESLint + Prettier</b> — форматирование</li>
+          <li><b>Lighthouse</b> — аудит</li>
+          <li><b>Chrome DevTools</b> — Performance, Network</li>
+        </ul>
+      `
+    }
+  }
+};
+
+/* ==========================================================
+   НАВИГАЦИЯ
+   ========================================================== */
+const NAV = [
+  { cat: 'html', label: 'HTML', items: ['html-basics','html-forms','html-media-semantic'] },
+  { cat: 'css',  label: 'CSS',  items: ['css-basics','css-layout','css-responsive','css-advanced'] },
+  { cat: 'js',   label: 'JavaScript', items: ['js-basics','js-functions','js-dom','js-es6','js-async'] },
+  { cat: 'proj', label: 'Проекты', items: ['projects'] },
+  { cat: 'ref',  label: 'Справочник', items: ['cheatsheet'] },
+];
+
+/* ==========================================================
+   STATE
+   ========================================================== */
+const state = {
+  current: 'welcome',
+  currentLevel: 'basic',   // запоминаем выбор уровня
+  levelByModule: {},       // { id: 'basic' | 'advanced' }
+  completed: JSON.parse(localStorage.getItem('completed-v2') || '[]'),
+  theme: localStorage.getItem('theme') || 'dark',
+};
+
+const ALL_LESSONS = NAV.flatMap(g => g.items);
+const content = document.getElementById('content');
+const breadcrumb = document.getElementById('breadcrumb');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const sidebarNav = document.getElementById('sidebarNav');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const themeBtn = document.getElementById('themeBtn');
+const burgerBtn = document.getElementById('burgerBtn');
+const searchBtn = document.getElementById('searchBtn');
+const searchModal = document.getElementById('searchModal');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+function renderSidebar() {
+  sidebarNav.innerHTML = NAV.map(group => `
+    <div class="cat cat--${group.cat}">
+      <div class="cat__head">
+        <span class="cat__dot"></span>${group.label}
+      </div>
+      ${group.items.map(id => {
+        const lesson = COURSE[id];
+        if (!lesson) return '';
+        const active = state.current === id ? 'active' : '';
+        const done = state.completed.includes(id) ? '✓' : '';
+        return `<button class="nav-item ${active}" data-go="${id}">
+          <span class="num">${lesson.num}</span>
+          <span class="lbl">${lesson.title}</span>
+          ${done ? `<span class="done-ic">✓</span>` : ''}
+        </button>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+/* ==========================================================
+   PROGRESS
+   ========================================================== */
+function updateProgress() {
+  const total = ALL_LESSONS.length;
+  const done = state.completed.filter(id => ALL_LESSONS.includes(id)).length;
+  const pct = total ? (done / total) * 100 : 0;
+  progressFill.style.width = pct + '%';
+  progressLabel.textContent = `${done} / ${total}`;
+}
+
+/* ==========================================================
+   RENDER
+   ========================================================== */
+function render(id, opts = {}) {
+  const lesson = COURSE[id];
+  if (!lesson) return;
+
+  state.current = id;
+  location.hash = id;
+
+  if (id === 'welcome') {
+    breadcrumb.innerHTML = '<b>Главная</b>';
+    content.innerHTML = lesson.html;
+    window.scrollTo(0,0);
+    return;
+  }
+
+  const tagLabel = { html:'HTML', css:'CSS', js:'JavaScript', proj:'Проект', ref:'Справочник' }[lesson.cat];
+  const idx = ALL_LESSONS.indexOf(id);
+  const prev = idx > 0 ? ALL_LESSONS[idx - 1] : null;
+  const next = idx < ALL_LESSONS.length - 1 ? ALL_LESSONS[idx + 1] : null;
+
+  // Текущий уровень
+  const currentLevel = opts.level
+    || state.levelByModule[id]
+    || 'basic';
+  state.levelByModule[id] = currentLevel;
+
+  breadcrumb.innerHTML = `<b>${tagLabel}</b> / ${lesson.title}`;
+
+  const anchorsHtml = lesson.anchors && lesson.anchors.length
+    ? `<div class="anchors">
+        ${lesson.anchors.map(a => `<a href="#${a.id}" data-anchor="${a.id}">${a.label}</a>`).join('')}
+       </div>`
+    : '';
+
+  const hasAdvanced = lesson.levels.advanced && lesson.levels.advanced.trim().length > 0;
+
+  content.innerHTML = `
+    <div class="lesson active">
+      <span class="lesson__tag tag--${lesson.cat}">${tagLabel}</span>
+      <h1>${lesson.title}</h1>
+      <p class="lesson__lead">${lesson.lead}</p>
+      <div class="lesson__meta">${lesson.meta.map(m => `<span>${m}</span>`).join('')}</div>
+
+      ${hasAdvanced ? `
+        <div class="level-tabs">
+          <button class="level-tab ${currentLevel === 'basic' ? 'active' : ''}" data-level="basic">
+            🟢 Базовый <span class="badge">новичок</span>
+          </button>
+          <button class="level-tab ${currentLevel === 'advanced' ? 'active' : ''}" data-level="advanced">
+            🔵 Продвинутый <span class="badge">средний</span>
+          </button>
+        </div>
+      ` : ''}
+
+      ${anchorsHtml}
+
+      <div class="level-content ${currentLevel === 'basic' ? 'active' : ''}" data-content="basic">
+        ${lesson.levels.basic}
+      </div>
+      ${hasAdvanced ? `
+        <div class="level-content ${currentLevel === 'advanced' ? 'active' : ''}" data-content="advanced">
+          ${lesson.levels.advanced}
+        </div>
+      ` : ''}
+
+      <div class="lesson__nav">
+        ${prev ? `<button class="btn btn--ghost" data-go="${prev}">← ${COURSE[prev].title}</button>` : '<span></span>'}
+        <button class="btn ${isDone(id) ? 'btn--done' : 'btn--primary'}" id="doneBtn" ${isDone(id) ? 'disabled' : ''}>
+          ${isDone(id) ? '✓ Пройдено' : 'Отметить как пройденный'}
+        </button>
+        ${next ? `<button class="btn btn--primary" data-go="${next}">${COURSE[next].title} →</button>` : '<span></span>'}
+      </div>
+    </div>
+  `;
+
+  window.scrollTo(0,0);
+
+  // Уровни
+  content.querySelectorAll('.level-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const level = tab.dataset.level;
+      state.levelByModule[id] = level;
+      content.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      content.querySelectorAll('.level-content').forEach(c => {
+        c.classList.toggle('active', c.dataset.content === level);
+      });
+    });
+  });
+
+  // Якоря
+  content.querySelectorAll('[data-anchor]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(a.dataset.anchor);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Кнопка «пройдено»
+  const doneBtn = document.getElementById('doneBtn');
+  if (doneBtn && !isDone(id)) {
+    doneBtn.addEventListener('click', () => markDone(id));
+  }
+
+  renderSidebar();
+  closeSidebar();
+}
+
+function isDone(id) {
+  return state.completed.includes(id);
+}
+
+function markDone(id) {
+  if (!state.completed.includes(id)) {
+    state.completed.push(id);
+    localStorage.setItem('completed-v2', JSON.stringify(state.completed));
+    updateProgress();
+    render(id, { level: state.levelByModule[id] });
+  }
+}
+
+/* ==========================================================
+   GLOBAL DELEGATION
+   ========================================================== */
+document.addEventListener('click', (e) => {
+  const go = e.target.closest('[data-go]');
+  if (go) {
+    render(go.dataset.go);
+    return;
+  }
+});
+
+/* ==========================================================
+   SIDEBAR TOGGLE
+   ========================================================== */
+burgerBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+});
+
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+overlay.addEventListener('click', closeSidebar);
+
+/* ==========================================================
+   THEME
+   ========================================================== */
+function applyTheme() {
+  if (state.theme === 'light') {
+    document.body.classList.add('light');
+    themeBtn.textContent = '☀️';
+  } else {
+    document.body.classList.remove('light');
+    themeBtn.textContent = '🌙';
+  }
+}
+themeBtn.addEventListener('click', () => {
+  state.theme = state.theme === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', state.theme);
+  applyTheme();
+});
+
+/* ==========================================================
+   SEARCH
+   ========================================================== */
+function openSearch() {
+  searchModal.classList.add('show');
+  setTimeout(() => searchInput.focus(), 50);
+  searchInput.value = '';
+  renderSearchResults('');
+}
+
+function closeSearch() {
+  searchModal.classList.remove('show');
+}
+
+searchBtn.addEventListener('click', openSearch);
+searchModal.addEventListener('click', (e) => {
+  if (e.target === searchModal) closeSearch();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSearch();
+  // Ctrl/Cmd + K — открыть поиск
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+});
+
+function renderSearchResults(query) {
+  const q = query.trim().toLowerCase();
+
+  const items = Object.values(COURSE)
+    .filter(l => l.id !== 'welcome')
+    .filter(l => {
+      if (!q) return true;
+      const inTitle = l.title.toLowerCase().includes(q);
+      const inLead = l.lead.toLowerCase().includes(q);
+      const inBody = (l.levels.basic + (l.levels.advanced || '')).toLowerCase().includes(q);
+      return inTitle || inLead || inBody;
+    })
+    .slice(0, 20);
+
+  if (items.length === 0) {
+    searchResults.innerHTML = '<p class="search-empty">Ничего не найдено</p>';
+    return;
+  }
+
+  searchResults.innerHTML = items.map(l => `
+    <div class="search-result" data-go="${l.id}">
+      <div class="search-result__title">${l.num} · ${l.title}</div>
+      <div class="search-result__cat">${
+        { html:'HTML', css:'CSS', js:'JavaScript', proj:'Проект', ref:'Справочник' }[l.cat] || ''
+      }</div>
+    </div>
+  `).join('');
+
+  searchResults.querySelectorAll('[data-go]').forEach(el => {
+    el.addEventListener('click', () => {
+      closeSearch();
+      render(el.dataset.go);
+    });
+  });
+}
+
+searchInput.addEventListener('input', (e) => {
+  renderSearchResults(e.target.value);
+});
+
+/* ==========================================================
+   INIT
+   ========================================================== */
+function init() {
+  applyTheme();
+  updateProgress();
+
+  const hash = location.hash.replace('#', '');
+  if (hash && COURSE[hash]) {
+    render(hash);
+  } else {
+    render('welcome');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
