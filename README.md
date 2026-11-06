@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎓 WebCourse Pro
+# ИНАЛЛ ПРОШУ ВАС ПОСТАВЬТЕ МНЕ ЗАЧЕТ 5
 
 **Полный курс HTML · CSS · JavaScript — от новичка до уверенного джуна**
 
